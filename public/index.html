@@ -1873,6 +1873,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const roomFromUrl = urlParams.get('room');
 if (roomFromUrl) {
   document.getElementById('room-code-input').value = roomFromUrl.toUpperCase();
+  document.getElementById('btn-create-room').parentElement.style.display = 'none';
+  document.querySelector('.lobby-divider').style.display = 'none';
 }
 
 document.getElementById('btn-create-room').addEventListener('click', function() {
