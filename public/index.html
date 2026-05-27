@@ -2743,6 +2743,10 @@ socket.on('toast', function(data) {
   showToast(data.message);
 });
 
+socket.on('pool-reset', function() {
+  showToast('Todos pularam — Pool resetado!', 3000);
+});
+
 // ── Render ──
 
 function renderGame(state) {
