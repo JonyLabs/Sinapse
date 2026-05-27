@@ -73,6 +73,7 @@ function createRoom(hostSocketId, hostName) {
     pendingPlay: null,
     votes: {},
     history: [],
+    consecutiveSkips: 0,
     // Creativity Mode fields
     creativityPhase: null,
     cardSelections: {},
@@ -122,6 +123,7 @@ function startGame(room) {
   room.pendingPlay = null;
   room.votes = {};
   room.history = [];
+  room.consecutiveSkips = 0;
   room.players.forEach(p => {
     p.hand = [];
     p.score = 0;
@@ -569,6 +571,7 @@ io.on('connection', (socket) => {
 
     player.hand = player.hand.filter(c => c !== cardId);
     room.conceptPool.push(cardId);
+    room.consecutiveSkips = 0;
 
     room.pendingPlay = {
       card: cardId,
@@ -612,6 +615,21 @@ io.on('connection', (socket) => {
 
     const playerIndex = room.players.findIndex(p => p.id === socket.id);
     if (playerIndex !== room.currentPlayerIndex) return;
+
+    room.consecutiveSkips++;
+    const connectedCount = room.players.filter(p => p.connected).length;
+
+    if (room.consecutiveSkips >= connectedCount && room.conceptPool.length > 0) {
+      room.conceptPool = [];
+      room.consecutiveSkips = 0;
+      advanceTurn(room);
+      broadcastState(room);
+      room.players.forEach(p => {
+        const sock = io.sockets.sockets.get(p.id);
+        if (sock) sock.emit('pool-reset');
+      });
+      return;
+    }
 
     advanceTurn(room);
     broadcastState(room);
@@ -739,6 +757,7 @@ io.on('connection', (socket) => {
 
   function completeVoting(room, success) {
     room.phase = 'play';
+    room.consecutiveSkips = 0;
     const autoReset = success && room.conceptPool.length >= CONFIG.MAX_POOL;
 
     if (!success) room.conceptPool = [];
