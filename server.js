@@ -92,7 +92,8 @@ function joinRoom(code, socketId, playerName) {
   const room = rooms.get(code);
   if (!room) return { error: 'Sala não encontrada' };
   if (room.state !== 'lobby') return { error: 'Jogo já iniciado' };
-  if (room.players.length >= 4) return { error: 'Sala cheia (máx. 4)' };
+  const maxPlayers = room.gameMode === 'creativity' ? 8 : 4;
+  if (room.players.length >= maxPlayers) return { error: `Sala cheia (máx. ${maxPlayers})` };
   if (room.players.some(p => p.id === socketId)) return { error: 'Já está na sala' };
 
   room.players.push({
@@ -539,8 +540,12 @@ io.on('connection', (socket) => {
     if (!currentRoom) return;
     const room = rooms.get(currentRoom);
     if (!room || room.hostId !== socket.id) return;
-    if (room.players.length < 1) return;
     if (room.state !== 'lobby') return;
+    const minPlayers = room.gameMode === 'creativity' ? 2 : 1;
+    if (room.players.length < minPlayers) {
+      socket.emit('join-error', { message: `Mínimo de ${minPlayers} jogadores para este modo` });
+      return;
+    }
 
     if (room.gameMode === 'creativity') {
       startCreativityGame(room);
