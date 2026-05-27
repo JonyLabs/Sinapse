@@ -1559,6 +1559,638 @@ body::after {
   letter-spacing: 0.1em;
 }
 
+/* ════════════════════════════════
+   MODE SELECTOR (Waiting Room)
+════════════════════════════════ */
+.mode-selector {
+  width: 100%;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 14px 10px;
+  background: rgba(26,13,61,0.6);
+  border: 2px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.mode-btn:hover:not(.selected):not(:disabled) {
+  border-color: var(--lilac);
+  color: var(--cream);
+  background: rgba(45,27,105,0.5);
+}
+
+.mode-btn.selected {
+  border-color: var(--white);
+  color: var(--cream);
+  background: linear-gradient(135deg, rgba(123,63,168,0.6), rgba(74,44,154,0.6));
+  box-shadow: 0 0 20px rgba(255,255,255,0.2), 0 0 40px rgba(255,255,255,0.08);
+}
+
+.mode-btn:disabled {
+  cursor: default;
+}
+
+/* ════════════════════════════════
+   CREATIVITY MODE SCREEN
+════════════════════════════════ */
+#screen-creativity {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: transparent;
+  overflow: hidden;
+}
+
+.creativity-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.creativity-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.creativity-header > * { pointer-events: auto; }
+
+.creativity-phase-strip {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--mist);
+  text-transform: uppercase;
+  z-index: 5;
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.4s;
+}
+
+.creativity-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 20px 180px;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  gap: 20px;
+}
+
+.creativity-scoreboard {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 15;
+}
+
+.creativity-score-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(26,13,61,0.7);
+  border: 1px solid rgba(155,114,207,0.2);
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  backdrop-filter: blur(6px);
+}
+
+.creativity-score-chip .cs-name { max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.creativity-score-chip .cs-score { color: var(--gold); font-weight: 700; font-size: 0.75rem; }
+.creativity-score-chip.is-me { border-color: var(--brain-pink); color: var(--soft-pink); }
+
+/* ── Creativity Pool ── */
+.creativity-pool {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  min-height: 160px;
+  padding: 16px;
+  position: relative;
+}
+
+.creativity-pool::after {
+  content: '';
+  position: absolute;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  border: 1px dashed rgba(155,114,207,0.2);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: orbit-spin 15s linear infinite;
+}
+
+.creativity-pool-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ── Creativity Hand (Card Selection) ── */
+.creativity-hand-section {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(16,8,40,0.6);
+  border-top: 1px solid var(--border-soft);
+  padding: 10px 16px 14px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(6px);
+}
+
+.creativity-hand-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lilac), var(--brain-pink), var(--lilac), transparent);
+}
+
+.creativity-hand-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.creativity-hand-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.creativity-hand-cards {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.creativity-hand-cards .game-card.in-hand.cr-selected {
+  transform: translateY(-20px) scale(1.08);
+  border: 2px solid var(--white);
+  box-shadow: 0 0 24px rgba(255,255,255,0.35), 0 0 48px rgba(255,255,255,0.12);
+  z-index: 11;
+}
+
+.creativity-hand-cards .game-card.in-hand.cr-selected::after {
+  content: '\2713';
+  position: absolute;
+  top: -10px; right: -10px;
+  width: 22px; height: 22px;
+  background: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--void);
+  font-weight: 900;
+}
+
+.creativity-hand-cards .game-card.in-hand.cr-locked {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.4);
+}
+
+.creativity-confirm-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-creativity-confirm {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #7B3FA8, #4A2C9A);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-md);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-creativity-confirm:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-white);
+  border-color: var(--white);
+}
+
+.btn-creativity-confirm:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.creativity-status-text {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+/* ── Reveal Animation ── */
+.reveal-card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.reveal-card-container .game-card {
+  animation: reveal-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes reveal-pulse {
+  0% { box-shadow: 0 0 20px rgba(255,255,255,0.2), 0 0 40px rgba(255,255,255,0.1); }
+  100% { box-shadow: 0 0 40px rgba(255,255,255,0.5), 0 0 80px rgba(255,255,255,0.2); }
+}
+
+.reveal-text {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-shadow: var(--glow-white);
+  text-align: center;
+  animation: reveal-fade 0.6s ease-out;
+}
+
+@keyframes reveal-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Creative Input Phase ── */
+.creativity-input-section {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(16,8,40,0.6);
+  border-top: 1px solid var(--border-soft);
+  padding: 14px 20px 18px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(6px);
+}
+
+.creativity-input-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lilac), var(--brain-pink), var(--lilac), transparent);
+}
+
+.creativity-textarea {
+  width: 100%;
+  background: rgba(26,13,61,0.7);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+  resize: none;
+  min-height: 52px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  line-height: 1.4;
+}
+
+.creativity-textarea:focus {
+  border-color: var(--brain-pink);
+  box-shadow: 0 0 0 3px rgba(249,168,184,0.12);
+}
+
+.creativity-textarea::placeholder { color: var(--text-ghost); font-size: 0.82rem; }
+.creativity-textarea:disabled { opacity: 0.5; }
+
+/* ── Voting Phase ── */
+.creativity-voting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.creativity-answer-card {
+  padding: 16px 18px;
+  background: rgba(26,13,61,0.6);
+  border: 2px solid rgba(155,114,207,0.2);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--cream);
+  cursor: pointer;
+  transition: all 0.3s;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.creativity-answer-card:hover {
+  border-color: var(--lilac);
+  background: rgba(45,27,105,0.5);
+  transform: translateY(-2px);
+}
+
+.creativity-answer-card.vote-selected {
+  border-color: var(--white);
+  background: rgba(45,27,105,0.6);
+  box-shadow: 0 0 24px rgba(255,255,255,0.25), 0 0 48px rgba(255,255,255,0.08);
+}
+
+.creativity-vote-bottom {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(16,8,40,0.6);
+  border-top: 1px solid var(--border-soft);
+  padding: 14px 20px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backdrop-filter: blur(6px);
+}
+
+.creativity-vote-bottom::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lilac), var(--brain-pink), var(--lilac), transparent);
+}
+
+/* ── Round Results Overlay ── */
+.creativity-results-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,5,30,0.92);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  backdrop-filter: blur(14px);
+  padding: 20px;
+}
+
+.creativity-results-overlay.open { opacity: 1; pointer-events: all; }
+
+.creativity-results-box {
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  background: rgba(45,27,105,0.92);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  backdrop-filter: blur(20px);
+}
+
+.creativity-results-overlay.open .creativity-results-box {
+  transform: scale(1) translateY(0);
+}
+
+.creativity-results-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brain-pink), var(--gold), var(--lilac), transparent);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.cr-results-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cr-winning-answer {
+  padding: 18px;
+  background: rgba(26,13,61,0.7);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: 0 0 20px rgba(245,200,66,0.2);
+  animation: reveal-pulse 2s ease-in-out infinite alternate;
+}
+
+.cr-winning-answer .cr-answer-text {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.5;
+}
+
+.cr-winning-answer .cr-answer-author {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-top: 10px;
+  display: block;
+}
+
+.cr-all-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cr-answer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(26,13,61,0.5);
+  border: 1px solid rgba(155,114,207,0.15);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.cr-answer-row.is-winner {
+  border-color: var(--gold);
+  background: rgba(245,200,66,0.08);
+}
+
+.cr-answer-row .cr-row-text { flex: 1; color: var(--cream); margin-right: 10px; }
+.cr-answer-row .cr-row-author { color: var(--soft-pink); white-space: nowrap; }
+.cr-answer-row .cr-row-votes { color: var(--gold); font-weight: 700; margin-left: 8px; white-space: nowrap; }
+.cr-answer-row .cr-row-points { color: #86EFAC; font-weight: 700; margin-left: 8px; white-space: nowrap; }
+
+.cr-scores-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cr-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(26,13,61,0.4);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.cr-score-row .cr-s-name { color: var(--cream); }
+.cr-score-row .cr-s-score { color: var(--gold); font-weight: 700; font-size: 0.9rem; }
+
+.btn-next-round {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #7B3FA8, #4A2C9A);
+  border: 1px solid rgba(249,168,184,0.3);
+  border-radius: var(--radius-md);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-next-round:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-purple);
+  border-color: var(--brain-pink);
+}
+
+/* ── Phase Transitions ── */
+@keyframes phase-enter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cr-phase-enter { animation: phase-enter 0.5s ease-out; }
+
+@keyframes neural-pulse-bg {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Waiting Indicator ── */
+.cr-waiting-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.cr-waiting-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border-soft);
+  border-top-color: var(--brain-pink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.cr-player-status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.cr-player-chip {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(155,114,207,0.2);
+  background: rgba(26,13,61,0.5);
+  color: var(--text-muted);
+}
+
+.cr-player-chip.confirmed {
+  border-color: #86EFAC;
+  color: #86EFAC;
+  background: rgba(134,239,172,0.08);
+}
+
 /* Mobile */
 @media (max-width: 600px) {
   :root { --card-w: 70px; --card-h: 98px; }
@@ -1571,6 +2203,10 @@ body::after {
   .lobby-panel { padding: 20px; }
   .opponent-hand-row { padding: 6px 8px; }
   .opponent-cards .game-card { width: 28px; height: 40px; }
+  .creativity-scoreboard { gap: 6px; flex-wrap: wrap; }
+  .creativity-score-chip { font-size: 0.55rem; padding: 3px 7px; }
+  .creativity-results-box { padding: 20px; }
+  .mode-buttons { flex-direction: column; }
 }
 </style>
 </head>
@@ -1677,6 +2313,14 @@ body::after {
       <div class="section-label">Jogadores na Sala</div>
       <div class="player-list" id="player-list"></div>
 
+      <div class="mode-selector" id="mode-selector">
+        <div class="section-label">Modo de Jogo</div>
+        <div class="mode-buttons">
+          <button class="mode-btn selected" id="mode-btn-sinapse" data-mode="sinapse">SINAPSE MODE</button>
+          <button class="mode-btn" id="mode-btn-creativity" data-mode="creativity">CREATIVITY MODE</button>
+        </div>
+      </div>
+
       <button class="btn-primary" id="btn-start-game" style="display:none;">INICIAR JOGO ▶</button>
       <div class="waiting-hint" id="waiting-hint">Aguardando o host iniciar<span class="waiting-dots"></span></div>
     </div>
@@ -1740,6 +2384,66 @@ body::after {
   </div>
 </div>
 
+<!-- ════════════════════════════════════════
+     CREATIVITY MODE SCREEN
+════════════════════════════════════════ -->
+<div id="screen-creativity" class="screen">
+  <div class="creativity-layout">
+    <header class="creativity-header">
+      <div class="header-logo">SINAPSE <span style="font-size:0.55rem;color:var(--lilac);letter-spacing:0.2em;">CREATIVITY</span></div>
+    </header>
+
+    <div class="creativity-scoreboard" id="cr-scoreboard"></div>
+    <div class="creativity-phase-strip" id="cr-phase-strip"></div>
+
+    <main class="creativity-main" id="cr-main-area">
+      <div class="creativity-pool-label" id="cr-pool-label">CONCEPT POOL</div>
+      <div class="creativity-pool" id="cr-concept-pool"></div>
+      <div id="cr-dynamic-content"></div>
+    </main>
+  </div>
+
+  <div class="creativity-hand-section" id="cr-hand-section" style="display:none;">
+    <div class="creativity-hand-info">
+      <span class="creativity-hand-label" id="cr-hand-label">Escolha uma carta</span>
+      <div class="cr-player-status-list" id="cr-hand-status"></div>
+    </div>
+    <div class="creativity-hand-cards" id="cr-hand-cards"></div>
+    <div class="creativity-confirm-row" id="cr-hand-confirm-row">
+      <button class="btn-creativity-confirm" id="cr-btn-confirm-card" disabled>CONFIRMAR SELEÇÃO</button>
+    </div>
+  </div>
+
+  <div class="creativity-input-section" id="cr-input-section" style="display:none;">
+    <div class="creativity-hand-info">
+      <span class="creativity-hand-label">Conecte os conceitos</span>
+      <div class="cr-player-status-list" id="cr-input-status"></div>
+    </div>
+    <textarea class="creativity-textarea" id="cr-answer-input" placeholder="Escreva uma associação criativa..." rows="2" maxlength="200"></textarea>
+    <div class="creativity-confirm-row">
+      <button class="btn-creativity-confirm" id="cr-btn-submit-answer" disabled>CONFIRMAR RESPOSTA</button>
+    </div>
+  </div>
+
+  <div class="creativity-vote-bottom" id="cr-vote-bottom" style="display:none;">
+    <div class="cr-player-status-list" id="cr-vote-status"></div>
+    <button class="btn-creativity-confirm" id="cr-btn-confirm-vote" disabled>CONFIRMAR VOTO</button>
+  </div>
+</div>
+
+<!-- Creativity Round Results -->
+<div class="creativity-results-overlay" id="cr-results-overlay">
+  <div class="creativity-results-box">
+    <div class="cr-results-title" id="cr-results-title">RESULTADO DA RODADA</div>
+    <div class="cr-winning-answer" id="cr-winning-answer"></div>
+    <div class="section-label" style="margin-top:8px;">Todas as Respostas</div>
+    <div class="cr-all-answers" id="cr-all-answers"></div>
+    <div class="section-label" style="margin-top:8px;">Placar</div>
+    <div class="cr-scores-section" id="cr-scores-section"></div>
+    <button class="btn-next-round" id="cr-btn-next-round">PRÓXIMA RODADA ▶</button>
+  </div>
+</div>
+
 <!-- Voting Modal -->
 <div class="modal-overlay" id="voting-modal">
   <div class="modal-box">
@@ -1767,7 +2471,7 @@ body::after {
     <div class="victory-trophy">&#127942;</div>
     <div class="victory-title">VITÓRIA!</div>
     <div class="victory-winner-name" id="victory-winner-name"></div>
-    <div class="victory-subtitle">descartou todas as cartas</div>
+    <div class="victory-subtitle" id="victory-subtitle">descartou todas as cartas</div>
     <div class="victory-scores" id="victory-scores"></div>
     <div class="victory-buttons">
       <button class="btn-victory btn-victory-restart" id="btn-victory-restart">&#8635; REINICIAR JOGO</button>
@@ -1806,6 +2510,10 @@ let LOCAL = {
   roomCode: null,
   isHost: false,
   gameState: null,
+  gameMode: 'sinapse',
+  crSelectedCard: null,
+  crSelectedVote: null,
+  crState: null,
 };
 
 // ── Utility ──
@@ -1938,6 +2646,7 @@ document.getElementById('btn-copy-link').addEventListener('click', function() {
 socket.on('lobby-update', function(data) {
   LOCAL.isHost = data.hostId === socket.id;
   LOCAL.roomCode = data.roomCode;
+  LOCAL.gameMode = data.gameMode || 'sinapse';
 
   if (data.roomState === 'lobby') {
     document.getElementById('display-room-code').textContent = data.roomCode;
@@ -1959,6 +2668,14 @@ socket.on('lobby-update', function(data) {
     list.appendChild(item);
   });
 
+  var modeBtnS = document.getElementById('mode-btn-sinapse');
+  var modeBtnC = document.getElementById('mode-btn-creativity');
+  var selectedMode = data.gameMode || 'sinapse';
+  modeBtnS.classList.toggle('selected', selectedMode === 'sinapse');
+  modeBtnC.classList.toggle('selected', selectedMode === 'creativity');
+  modeBtnS.disabled = !LOCAL.isHost;
+  modeBtnC.disabled = !LOCAL.isHost;
+
   const startBtn = document.getElementById('btn-start-game');
   const hint = document.getElementById('waiting-hint');
   if (LOCAL.isHost) {
@@ -1972,6 +2689,16 @@ socket.on('lobby-update', function(data) {
 
 document.getElementById('btn-start-game').addEventListener('click', function() {
   socket.emit('start-game');
+});
+
+document.getElementById('mode-btn-sinapse').addEventListener('click', function() {
+  if (!LOCAL.isHost) return;
+  socket.emit('set-game-mode', { mode: 'sinapse' });
+});
+
+document.getElementById('mode-btn-creativity').addEventListener('click', function() {
+  if (!LOCAL.isHost) return;
+  socket.emit('set-game-mode', { mode: 'creativity' });
 });
 
 // ── Game State Updates ──
@@ -2361,13 +3088,348 @@ function spawnVictoryParticles() {
 
 document.getElementById('btn-victory-restart').addEventListener('click', function() {
   hideVictoryPanel();
+  document.getElementById('victory-subtitle').textContent = 'descartou todas as cartas';
   socket.emit('restart-game');
 });
 
 document.getElementById('btn-victory-menu').addEventListener('click', function() {
   hideVictoryPanel();
+  document.getElementById('victory-subtitle').textContent = 'descartou todas as cartas';
   socket.emit('back-to-lobby');
   showScreen('waiting');
+});
+
+// ══════════════════════════════════════════════════════
+//  CREATIVITY MODE — Client
+// ══════════════════════════════════════════════════════
+
+socket.on('creativity-state-update', function(state) {
+  LOCAL.crState = state;
+  LOCAL.gameMode = 'creativity';
+
+  if (state.roomState === 'playing' || state.roomState === 'ended') {
+    showScreen('creativity');
+    renderCreativity(state);
+  }
+});
+
+socket.on('creativity-victory', function(data) {
+  hideCreativityResults();
+  showVictoryPanel(data.winnerName, data.scores);
+  document.getElementById('victory-subtitle').textContent = 'atingiu 10 pontos!';
+});
+
+function renderCreativity(state) {
+  renderCrScoreboard(state);
+  renderCrPhaseStrip(state);
+  renderCrConceptPool(state);
+
+  document.getElementById('cr-hand-section').style.display = 'none';
+  document.getElementById('cr-input-section').style.display = 'none';
+  document.getElementById('cr-vote-bottom').style.display = 'none';
+  document.getElementById('cr-dynamic-content').innerHTML = '';
+
+  if (state.creativityPhase === 'card_selection') {
+    renderCrCardSelection(state);
+  } else if (state.creativityPhase === 'random_card_reveal') {
+    renderCrReveal(state);
+  } else if (state.creativityPhase === 'creative_input') {
+    renderCrCreativeInput(state);
+  } else if (state.creativityPhase === 'voting') {
+    renderCrVoting(state);
+  } else if (state.creativityPhase === 'round_results') {
+    renderCrRoundResults(state);
+  }
+}
+
+function renderCrScoreboard(state) {
+  var sb = document.getElementById('cr-scoreboard');
+  sb.innerHTML = '';
+  state.players.forEach(function(p) {
+    var chip = document.createElement('div');
+    chip.className = 'creativity-score-chip' + (p.id === socket.id ? ' is-me' : '');
+    chip.innerHTML = '<span class="cs-name">' + p.name + '</span><span class="cs-score">' + p.score + '</span>';
+    sb.appendChild(chip);
+  });
+}
+
+function renderCrPhaseStrip(state) {
+  var strip = document.getElementById('cr-phase-strip');
+  var labels = {
+    'card_selection': 'ESCOLHA UMA CARTA',
+    'random_card_reveal': 'REVELANDO CARTA...',
+    'creative_input': 'CRIE UMA ASSOCIAÇÃO',
+    'voting': 'VOTE NA MELHOR RESPOSTA',
+    'round_results': 'RESULTADOS'
+  };
+  strip.textContent = '\u2014 ' + (labels[state.creativityPhase] || '') + ' \u2014';
+}
+
+function renderCrConceptPool(state) {
+  var pool = document.getElementById('cr-concept-pool');
+  pool.innerHTML = '';
+  if (state.conceptPool.length === 0) {
+    pool.innerHTML = '<div class="pool-empty">\u2014</div>';
+    return;
+  }
+  state.conceptPool.forEach(function(cardId, idx) {
+    if (idx > 0) {
+      var plus = document.createElement('span');
+      plus.className = 'modal-pool-plus';
+      plus.textContent = '+';
+      pool.appendChild(plus);
+    }
+    var card = createCardEl(cardId, 'in-pool');
+    pool.appendChild(card);
+  });
+}
+
+// ── Phase 1: Card Selection ──
+
+function renderCrCardSelection(state) {
+  var handSection = document.getElementById('cr-hand-section');
+  handSection.style.display = 'flex';
+
+  document.getElementById('cr-hand-label').textContent = state.myConfirmed ? 'Aguardando outros jogadores...' : 'Escolha uma carta da sua mão';
+
+  var statusContainer = document.getElementById('cr-hand-status');
+  statusContainer.innerHTML = '';
+  if (state.confirmedPlayers) {
+    state.confirmedPlayers.forEach(function(p) {
+      if (!p.connected) return;
+      var chip = document.createElement('span');
+      chip.className = 'cr-player-chip' + (p.confirmed ? ' confirmed' : '');
+      chip.textContent = p.name;
+      statusContainer.appendChild(chip);
+    });
+  }
+
+  var handCards = document.getElementById('cr-hand-cards');
+  handCards.innerHTML = '';
+  state.myHand.forEach(function(cardId) {
+    var card = createCardEl(cardId, 'in-hand');
+    if (state.myConfirmed) {
+      card.classList.add('cr-locked');
+    } else {
+      if (LOCAL.crSelectedCard === cardId) {
+        card.classList.add('cr-selected');
+      }
+      card.addEventListener('click', function() {
+        onCrHandCardClick(cardId);
+      });
+    }
+    handCards.appendChild(card);
+  });
+
+  var confirmBtn = document.getElementById('cr-btn-confirm-card');
+  if (state.myConfirmed) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'SELEÇÃO CONFIRMADA';
+  } else {
+    confirmBtn.disabled = !LOCAL.crSelectedCard;
+    confirmBtn.textContent = 'CONFIRMAR SELEÇÃO';
+  }
+}
+
+function onCrHandCardClick(cardId) {
+  var state = LOCAL.crState;
+  if (!state || state.creativityPhase !== 'card_selection' || state.myConfirmed) return;
+  LOCAL.crSelectedCard = LOCAL.crSelectedCard === cardId ? null : cardId;
+  socket.emit('creativity-select-card', { cardId: LOCAL.crSelectedCard || '' });
+  renderCrCardSelection(state);
+}
+
+document.getElementById('cr-btn-confirm-card').addEventListener('click', function() {
+  if (!LOCAL.crSelectedCard) return;
+  socket.emit('creativity-confirm-card');
+});
+
+// ── Phase 2: Reveal ──
+
+function renderCrReveal(state) {
+  LOCAL.crSelectedCard = null;
+  var content = document.getElementById('cr-dynamic-content');
+  content.innerHTML = '';
+
+  var container = document.createElement('div');
+  container.className = 'reveal-card-container cr-phase-enter';
+
+  if (state.revealedCard) {
+    var card = createCardEl(state.revealedCard, 'in-pool');
+    card.style.width = '130px';
+    card.style.height = '182px';
+    card.style.border = '2px solid var(--white)';
+    container.appendChild(card);
+
+    var text = document.createElement('div');
+    text.className = 'reveal-text';
+    text.textContent = getCardDisplayName(state.revealedCard) + ' entra no pool!';
+    container.appendChild(text);
+  }
+
+  content.appendChild(container);
+}
+
+// ── Phase 3: Creative Input ──
+
+function renderCrCreativeInput(state) {
+  var inputSection = document.getElementById('cr-input-section');
+  inputSection.style.display = 'flex';
+
+  var statusContainer = document.getElementById('cr-input-status');
+  statusContainer.innerHTML = '';
+  if (state.confirmedPlayers) {
+    state.confirmedPlayers.forEach(function(p) {
+      if (!p.connected) return;
+      var chip = document.createElement('span');
+      chip.className = 'cr-player-chip' + (p.confirmed ? ' confirmed' : '');
+      chip.textContent = p.name;
+      statusContainer.appendChild(chip);
+    });
+  }
+
+  var textarea = document.getElementById('cr-answer-input');
+  var submitBtn = document.getElementById('cr-btn-submit-answer');
+
+  if (state.myAnswerConfirmed) {
+    textarea.disabled = true;
+    textarea.value = state.myAnswer || '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'RESPOSTA ENVIADA';
+  } else {
+    textarea.disabled = false;
+    submitBtn.textContent = 'CONFIRMAR RESPOSTA';
+    submitBtn.disabled = textarea.value.trim().length < 1;
+  }
+}
+
+document.getElementById('cr-answer-input').addEventListener('input', function(e) {
+  var state = LOCAL.crState;
+  if (!state || state.myAnswerConfirmed) return;
+  document.getElementById('cr-btn-submit-answer').disabled = e.target.value.trim().length < 1;
+});
+
+document.getElementById('cr-btn-submit-answer').addEventListener('click', function() {
+  var answer = document.getElementById('cr-answer-input').value.trim();
+  if (answer.length < 1) return;
+  socket.emit('creativity-submit-answer', { answer: answer });
+});
+
+// ── Phase 4: Voting ──
+
+function renderCrVoting(state) {
+  var content = document.getElementById('cr-dynamic-content');
+  content.innerHTML = '';
+
+  var voteList = document.createElement('div');
+  voteList.className = 'creativity-voting-list cr-phase-enter';
+
+  if (state.anonymousAnswers) {
+    state.anonymousAnswers.forEach(function(a) {
+      var card = document.createElement('div');
+      card.className = 'creativity-answer-card';
+      if (LOCAL.crSelectedVote === a.id) card.classList.add('vote-selected');
+      card.textContent = a.answer;
+      if (!state.myVote) {
+        card.addEventListener('click', function() {
+          LOCAL.crSelectedVote = LOCAL.crSelectedVote === a.id ? null : a.id;
+          renderCrVoting(state);
+        });
+      }
+      voteList.appendChild(card);
+    });
+  }
+
+  content.appendChild(voteList);
+
+  var voteBottom = document.getElementById('cr-vote-bottom');
+  voteBottom.style.display = 'flex';
+
+  var statusContainer = document.getElementById('cr-vote-status');
+  statusContainer.innerHTML = '';
+  if (state.votedPlayers) {
+    state.votedPlayers.forEach(function(p) {
+      if (!p.connected) return;
+      var chip = document.createElement('span');
+      chip.className = 'cr-player-chip' + (p.voted ? ' confirmed' : '');
+      chip.textContent = p.name;
+      statusContainer.appendChild(chip);
+    });
+  }
+
+  var voteBtn = document.getElementById('cr-btn-confirm-vote');
+  if (state.myVote) {
+    voteBtn.disabled = true;
+    voteBtn.textContent = 'VOTO CONFIRMADO';
+  } else {
+    voteBtn.disabled = !LOCAL.crSelectedVote;
+    voteBtn.textContent = 'CONFIRMAR VOTO';
+  }
+}
+
+document.getElementById('cr-btn-confirm-vote').addEventListener('click', function() {
+  if (!LOCAL.crSelectedVote) return;
+  socket.emit('creativity-cast-vote', { targetId: LOCAL.crSelectedVote });
+});
+
+// ── Phase 5: Round Results ──
+
+function renderCrRoundResults(state) {
+  if (!state.roundResults) return;
+  var results = state.roundResults;
+
+  var overlay = document.getElementById('cr-results-overlay');
+  overlay.classList.add('open');
+
+  var winDiv = document.getElementById('cr-winning-answer');
+  winDiv.innerHTML = '';
+  if (results.winningAnswer) {
+    winDiv.innerHTML = '<div class="cr-answer-text">"' + results.winningAnswer.answer + '"</div>' +
+      '<span class="cr-answer-author">\u2014 ' + results.winningAnswer.playerName + ' (+' + results.winningAnswer.pointsGained + ' pts)</span>';
+  }
+
+  var allDiv = document.getElementById('cr-all-answers');
+  allDiv.innerHTML = '';
+  results.answers.forEach(function(a) {
+    var row = document.createElement('div');
+    row.className = 'cr-answer-row' + (a.isWinner ? ' is-winner' : '');
+    row.innerHTML =
+      '<span class="cr-row-text">"' + a.answer + '"</span>' +
+      '<span class="cr-row-author">' + a.playerName + '</span>' +
+      '<span class="cr-row-votes">' + a.voteCount + ' voto' + (a.voteCount !== 1 ? 's' : '') + '</span>' +
+      (a.pointsGained > 0 ? '<span class="cr-row-points">+' + a.pointsGained + '</span>' : '');
+    allDiv.appendChild(row);
+  });
+
+  var scoresDiv = document.getElementById('cr-scores-section');
+  scoresDiv.innerHTML = '';
+  var sortedScores = results.scores.slice().sort(function(a, b) { return b.score - a.score; });
+  sortedScores.forEach(function(s) {
+    var row = document.createElement('div');
+    row.className = 'cr-score-row';
+    row.innerHTML = '<span class="cr-s-name">' + s.name + '</span><span class="cr-s-score">' + s.score + '</span>';
+    scoresDiv.appendChild(row);
+  });
+
+  var nextBtn = document.getElementById('cr-btn-next-round');
+  if (state.roomState === 'ended') {
+    nextBtn.style.display = 'none';
+  } else {
+    nextBtn.style.display = '';
+  }
+
+  LOCAL.crSelectedCard = null;
+  LOCAL.crSelectedVote = null;
+  document.getElementById('cr-answer-input').value = '';
+}
+
+function hideCreativityResults() {
+  document.getElementById('cr-results-overlay').classList.remove('open');
+}
+
+document.getElementById('cr-btn-next-round').addEventListener('click', function() {
+  hideCreativityResults();
+  socket.emit('creativity-next-round');
 });
 </script>
 </body>
