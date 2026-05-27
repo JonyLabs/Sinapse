@@ -2310,7 +2310,7 @@ body::after {
     </div>
 
     <div class="waiting-panel">
-      <div class="section-label">Jogadores na Sala</div>
+      <div class="section-label">Jogadores na Sala <span id="player-count-info" style="color:var(--text-ghost);font-size:0.55rem;letter-spacing:0.1em;"></span></div>
       <div class="player-list" id="player-list"></div>
 
       <div class="mode-selector" id="mode-selector">
@@ -2498,7 +2498,7 @@ body::after {
 
 const socket = io();
 
-const PLAYER_COLORS = ['#F9A8B8','#F5C842','#9B72CF','#86EFAC'];
+const PLAYER_COLORS = ['#F9A8B8','#F5C842','#9B72CF','#86EFAC','#FCA5A5','#67E8F9','#FDE68A','#C4B5FD'];
 const IMG_PATH = 'img/cards/';
 const IMG_EXT = '.png';
 const CARD_BACK = 'img/background.png';
@@ -2670,6 +2670,9 @@ socket.on('lobby-update', function(data) {
     list.appendChild(item);
   });
 
+  var maxPlayers = (data.gameMode === 'creativity') ? 8 : 4;
+  document.getElementById('player-count-info').textContent = '(' + data.players.length + '/' + maxPlayers + ')';
+
   var modeBtnS = document.getElementById('mode-btn-sinapse');
   var modeBtnC = document.getElementById('mode-btn-creativity');
   var selectedMode = data.gameMode || 'sinapse';
@@ -2683,6 +2686,14 @@ socket.on('lobby-update', function(data) {
   if (LOCAL.isHost) {
     startBtn.style.display = '';
     hint.style.display = 'none';
+    var minPlayers = selectedMode === 'creativity' ? 2 : 1;
+    if (data.players.length < minPlayers) {
+      startBtn.disabled = true;
+      startBtn.textContent = 'MÍNIMO ' + minPlayers + ' JOGADORES ▶';
+    } else {
+      startBtn.disabled = false;
+      startBtn.textContent = 'INICIAR JOGO ▶';
+    }
   } else {
     startBtn.style.display = 'none';
     hint.style.display = '';
